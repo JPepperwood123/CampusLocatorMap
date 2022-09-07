@@ -22,52 +22,37 @@ public class Graph<E, T>{
     // e.getParentNode() == n and nodeGraph.containsKey(e.getChildNode()) == true
 
     /**
-     * Holds all the nodes in the graph which maps a set of edges to its children nodes in this Graph.
+     * Maps each parent node to a set of edges connecting them to other children nodes in this Graph.
      */
     private final Map<E, Set<Edge<E, T>>> nodeGraph;
 
     /**
-     * A constant holding the boolean value whether it would execute the expensive tests for checking
-     * if the Representation Invariant holds
+     * Constant to check if the expensive tests in the Representation Invariant holds
      */
     private static final boolean DEBUG = false;
-
 
     /**
      * Throws an exception if the representation invariant is violated.
      */
     private void checkRep() {
         if (DEBUG) {
-            // Asserting that the map is not null
             assert (nodeGraph != null);
 
             for (E currentNode : nodeGraph.keySet()) {
-                // Asserting that the current node is not null
                 assert (currentNode != null);
-                // Asserting that the current set of edges is not null
                 assert (nodeGraph.get(currentNode) != null);
 
-                // Getting set of all edges connected to currentNode in this Graph
                 Set<Edge<E, T>> edges = nodeGraph.get(currentNode);
                 for (Edge<E, T> currentEdge : edges) {
-                    // Asserting each parent node in currentEdge is in the Set mapped from that node
                     assert (currentEdge.getParentNode().equals(currentNode));
-
-                    // Asserting that each child node in currentEdge exists in this Graph
                     assert (nodeGraph.containsKey(currentEdge.getChildNode()));
                 }
-
             }
         }
-
-        // A Map cannot contain duplicate keys; each key can map to at most one value, so we don't have
-        // to assert that. The edges mapped from the key, which are nodes in the graph, are stored in a
-        // Set, whose values contain all edges connected from the node represented by the key, and Sets
-        // do not store duplicate values of the edges, so we do not need to assert that either.
     }
 
     /**
-     * @spec.effects Constructs a new Graph, which is initially empty as it has no nodes or edges.
+     * Default constructor to construct a new Graph with no nodes or edges.
      */
     public Graph() {
         this.nodeGraph = new HashMap<>();
@@ -75,23 +60,15 @@ public class Graph<E, T>{
     }
 
     /**
-     * Adds a new node represented by the object 'nodeData' of type E to this graph. If the node already exists
-     * in this graph, the method does not add the node to prevent duplication of nodes.
-     *
-     * @param nodeData the object of type E that represents the node to be added to the graph
-     * @throws IllegalArgumentException if nodeData == null
-     * @spec.modifies this
-     * @spec.effects A new node is added into this graph which is represented by the data in the object
-     * 'nodeData'. If the node already exists in this graph, no action happens to prevent
-     * duplication of nodes.
+     * Adds a new node of type E to this nodeGraph. Nodes are not duplicated in this nodeGraph
      */
     public void addNode(E nodeData) {
         checkRep();
         if (nodeData == null) {
-            throw new IllegalArgumentException("Null node");
+            throw new IllegalArgumentException("Argument is a null node");
         }
 
-        // Adding Node represented by nodeData to this Graph only if it doesn't already exist in it
+        // Node is added to nodeGraph if it doesn't already exist in it
         if (!containsNode(nodeData)) {
             this.nodeGraph.put(nodeData, new HashSet<>());
         }
@@ -104,16 +81,6 @@ public class Graph<E, T>{
      * label is already identical to the label of another edge connecting the same two nodes. Furthermore, if the
      * edge's parent node or child node does not already exist in this graph, the missing nodes are added to the
      * graph before adding the edge to the graph.
-     *
-     * @param edgeLabel the Edge object that represents the edge to be added between a parent node and
-     *                  child node in this graph
-     * @throws IllegalArgumentException if edgeLabel == null
-     * @spec.modifies this
-     * @spec.effects A new edge is added into this graph connecting two nodes on the graph. If either node does
-     * not exist in this graph, the missing nodes are added to the graph before adding the edge
-     * to the graph. The edge is only not added if the data represented by the edge label is already
-     * identical to the label of another edge connecting the same two nodes. It is however added
-     * when the labels are different for all edges between a specific parent and child node.
      */
     public void addEdge(Edge<E, T> edgeLabel) {
         checkRep();
