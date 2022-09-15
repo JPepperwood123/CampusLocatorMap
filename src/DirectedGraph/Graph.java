@@ -1,4 +1,4 @@
-package UndirectedGraph;
+package DirectedGraph;
 
 //import graph.*;
 import java.util.*;
@@ -55,7 +55,7 @@ public class Graph<E, T>{
      * Default constructor to construct a new Graph with no nodes or edges.
      */
     public Graph() {
-        this.nodeGraph = new HashMap<>();
+        nodeGraph = new HashMap<>();
         checkRep();
     }
 
@@ -70,39 +70,37 @@ public class Graph<E, T>{
 
         // Node is added to nodeGraph if it doesn't already exist in it
         if (!containsNode(nodeData)) {
-            this.nodeGraph.put(nodeData, new HashSet<>());
+            nodeGraph.put(nodeData, new HashSet<>());
         }
         checkRep();
     }
 
     /**
-     * Adds a new edge represented by an object Edge to this graph. This edge is added even if an edge already
-     * exists between two pairs of nodes. However, the edge is only not added if the data represented by the edge
-     * label is already identical to the label of another edge connecting the same two nodes. Furthermore, if the
-     * edge's parent node or child node does not already exist in this graph, the missing nodes are added to the
-     * graph before adding the edge to the graph.
+     * Adds a new edge of type Edge to this nodeGraph. Edges are added in all cases except if they do not have
+     * identical parent node, child node and edge label. If the edge's parent node or child node does not already
+     * exist in this nodeGraph, the missing nodes are added into this nodeGraph
      */
-    public void addEdge(Edge<E, T> edgeLabel) {
+    public void addEdge(Edge<E, T> newEdge) {
         checkRep();
-        if (edgeLabel == null) {
-            throw new IllegalArgumentException("Null Edge");
+        if (newEdge == null) {
+            throw new IllegalArgumentException("Argument is a null edge");
         }
 
-        // Adding Edge represented by edgeLabel to this Graph only if it doesn't already exist in this Graph
-        if (!containsEdge(edgeLabel)) {
+        // Edge is added to nodeGraph if it doesn't already exist in it
+        if (!containsEdge(newEdge)) {
 
-            // Adding Parent Node of Edge to this Graph only if it doesn't already exist in it
-            if (!containsNode(edgeLabel.getParentNode())) {
-                this.addNode(edgeLabel.getParentNode());
+            // Parent Node is added to nodeGraph if it doesn't already exist in it
+            if (!containsNode(newEdge.getParentNode())) {
+                addNode(newEdge.getParentNode());
             }
 
-            // Adding Child Node of Edge to this Graph only if it doesn't already exist in it
-            if (!containsNode(edgeLabel.getChildNode())) {
-                this.addNode(edgeLabel.getChildNode());
+            // Child Node is added to nodeGraph if it doesn't already exist in it
+            if (!containsNode(newEdge.getChildNode())) {
+                addNode(newEdge.getChildNode());
             }
 
-            // Adding Edge to create a connection between its parent node and child node in this Graph
-            this.nodeGraph.get(edgeLabel.getParentNode()).add(edgeLabel);
+            // Edge is added to nodeGraph to create a connection between the parent node and child node
+            nodeGraph.get(newEdge.getParentNode()).add(newEdge);
         }
         checkRep();
     }
